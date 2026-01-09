@@ -15,10 +15,22 @@ datasource db {
 }
 
 
+
+
 model User {
-  id     String @unique       @default(uuid())
-  username    String    @unique
-  email       String      @unique
-  password     String
-  createdAt     DateTime    @default(now())
+  id            String         @unique          @default(uuid())
+  username      String         @unique
+  email         String         @unique
+  password      String
+  createdAt     DateTime       @default(now())
+  stories       Story[]
+}
+
+model Story{
+  id           String          @unique       @default(uuid())
+  Title        String
+  Description  String?
+  Content      String
+  authorId     String
+  author        User        @relation(fields:[authorId], references:[id])
 }
