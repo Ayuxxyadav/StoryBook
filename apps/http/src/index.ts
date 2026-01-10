@@ -90,7 +90,30 @@ app.post("/signin",async(req:Request,res:Response)=>{
 })
 })
 
+app.get("/my-story-book",Middleware,async(req:Request, res: Response)=>{
+const UserId = req.userId;
+if(!UserId){
+    return res.status(400).json({
+        message:"Token not found"
+    })
+}
 
+const storyData = await prisma.story.findMany({
+
+    where:{
+        authorId:UserId
+    },
+    select : {
+        id:true,
+        Title:true,
+        Description:true
+    }
+})
+return res.status(200).json({
+    message:"Here all your StoryBooks",
+    story:storyData
+})
+})
 app.post("/create",Middleware,async(req:Request,res:Response)=>{
   const parsedData= createStorySchema.safeParse(req.body)
   if(!parsedData.success){
@@ -165,7 +188,7 @@ app.put("/edit/:id",Middleware,async(req:Request,res:Response)=>{
 
 })
 app.delete("/delete/:id",Middleware,async(req:Request,res:Response)=>{
-    const storyId = String(req.params);
+    const storyId =req.params.id;
     const userId = req.userId
 
     if(!storyId){
@@ -182,17 +205,18 @@ app.delete("/delete/:id",Middleware,async(req:Request,res:Response)=>{
             return res.status(400).json({
             message:"Storybook not found"
         })}
-        if(storyData.id !== userId){
+        if(storyData.authorId !== userId){
           return res.status(400).json({
             message:"You are not authorized to delete this Story book"
         })
         }
 
-        const deletedData = prisma.story.delete({
+        const deletedData = await prisma.story.delete({
             where : {id:storyData.id}
         })
         return res.json({
             message: "StoryBook deleted successfully",
+            StoryBooks:deletedData.Title
         });
 
    } catch (error) {

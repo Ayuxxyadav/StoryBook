@@ -28,7 +28,7 @@ model User {
 
 model Story{
   id           String          @unique       @default(uuid())
-  Title        String
+  Title        String          @unique
   Description  String?
   Content      String
   authorId     String
