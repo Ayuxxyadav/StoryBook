@@ -35,7 +35,6 @@ export default function Signin() {
       
       localStorage.setItem("token", token);
       router.push("/");
-      // Force refresh taaki navbar update ho jaye
       window.location.reload(); 
     } catch (error) {
       console.error(error);

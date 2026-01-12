@@ -11,7 +11,7 @@ import Middleware from "./middleware";
 
 
 dotenv.config()
-const Port = process.env.Port
+const Port = process.env.Port;
 
 const Secret = String(process.env.JWT_SECRET)
 const app = express();
@@ -224,7 +224,6 @@ app.delete("/delete/:id",Middleware,async(req:Request,res:Response)=>{
    }
 
 })
-
 
 
 app.listen(Port,()=>{

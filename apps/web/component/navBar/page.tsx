@@ -1,8 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { useRecoilState } from "recoil";
+import { isLoggedInAtom } from "../../store/atoms/authAtom";
 
 export default function NavPage() {
+
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInAtom);
+
+
+
   const mainLinks = [
     { item: "Home", route: "/" },
     { item: "StoryPlace", route: "/storyplace" },

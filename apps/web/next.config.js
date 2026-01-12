@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['recoil'],
      images: {
     remotePatterns: [
       // Pinterest
