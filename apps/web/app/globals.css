@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+/* Default (Light Mode) Variables */
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+}
+
+/* Dark Mode Variables */
+.dark {
+  --background: #0f172a; /* Dark Blue/Slate */
+  --foreground: #ffffff;
+}
+
+/* In variables ko poore body par apply karein */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

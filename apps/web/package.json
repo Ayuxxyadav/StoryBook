@@ -11,13 +11,18 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/material": "^7.3.7",
     "@repo/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/axios": "^0.14.4",
     "axios": "^1.13.2",
-    "next": "16.1.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "next": "14.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.5.0",
     "recoil": "^0.7.7"
   },
   "devDependencies": {

@@ -5,44 +5,50 @@ import { BACKEND_URL } from "../../../config";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSetRecoilState } from "recoil";
+import { userAtom } from "../../../store/atoms/userAtom";
+import { isLoggedInAtom } from "../../../store/atoms/authAtom";
 
 export default function Signin() {
   const router = useRouter();
   const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState(false);
+const setUser = useSetRecoilState(userAtom);
+const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
 
-  // Redirect if already logged in
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      router.push("/");
-    }
-  }, []);
+ async function handleSignIn() {
+  if (!username || !password) return alert("Please fill in all fields");
 
-  async function handleSignIn() {
-    if (!username || !password) return alert("Please fill in all fields");
+  setLoading(true);
+  try {
+    const res = await axios.post(`${BACKEND_URL}/signin`, {
+      username,
+      password,
+    });
 
-    setLoading(true);
-    try {
-      const res = await axios.post(`${BACKEND_URL}/signin`, {
-        username,
-        password,
-      });
+    const token = res.data.token;
 
-      // Backend response structure ke hisaab se token nikalein
-      const token = res.data.token || res.data;
-      
-      localStorage.setItem("token", token);
-      router.push("/");
-      window.location.reload(); 
-    } catch (error) {
-      console.error(error);
-      alert("Invalid email or password");
-    } finally {
-      setLoading(false);
-    }
+    localStorage.setItem("token", token);
+
+    const userData = {
+      userName: res.data.userName,
+      email: res.data.email,
+    };
+
+    localStorage.setItem("user", JSON.stringify(userData));
+
+    setUser(userData);
+    setIsLoggedIn(true);
+
+    router.push("/");
+  } catch (error) {
+    console.error(error);
+    alert("Invalid email or password");
+  } finally {
+    setLoading(false);
   }
+}
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-4 text-white">

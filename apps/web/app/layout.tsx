@@ -4,6 +4,8 @@ import "./globals.css";
 import NavPage from "../component/navBar/page";
 import Providers from "../component/provider";
 
+import ThemeHandler from "../component/themeProvider";
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -28,8 +30,10 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
        
         <Providers>
-           <NavPage/>
-         {children}
+          <NavPage/>
+        <ThemeHandler>
+          {children}
+        </ThemeHandler>
         </Providers>
         
       </body>

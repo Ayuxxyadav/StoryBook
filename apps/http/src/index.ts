@@ -86,7 +86,9 @@ app.post("/signin",async(req:Request,res:Response)=>{
 
     res.status(200).json({
         message:"User logged in successfully",
-         token : Token
+         token : Token,
+         userName:User.username,
+         email:User.email
 })
 })
 
