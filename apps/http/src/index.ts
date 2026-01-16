@@ -147,11 +147,11 @@ app.post("/create",Middleware,async(req:Request,res:Response)=>{
     })
 })
 app.put("/edit/:id",Middleware,async(req:Request,res:Response)=>{
-    const storyId = String(req.params);
+    const {id} = req.params
     const {title , description , content} = req.body;
     const userId = req.userId
 
-    if(!storyId){
+    if(!id){
         return res.status(400).json({
             message:"StoryId not provided"
         })
@@ -159,19 +159,19 @@ app.put("/edit/:id",Middleware,async(req:Request,res:Response)=>{
    try {
         const storyData = await prisma.story.findUnique({
         where : {
-            id : storyId
+            id : id
         }})
         if(!storyData){ 
             return res.status(400).json({
             message:"Storybook not found"
         })}
-        if(storyData.id !== userId){
+        if(storyData.authorId !== userId){
           return res.status(400).json({
             message:"You are not authorized to edit this Story book"
         })
         }
 
-        const updatedData = prisma.story.update({
+        const updatedData = await prisma.story.update({
             where : {id:storyData.id},
             data : {
                 Title: title,

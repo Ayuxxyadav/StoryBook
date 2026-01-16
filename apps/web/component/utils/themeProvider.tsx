@@ -1,6 +1,6 @@
 "use client"
 import { useRecoilValue } from "recoil";
-import { themeAtom } from "../store/atoms/themeAtom"; 
+import { themeAtom } from "../../store/atoms/themeAtom"; 
 import { useEffect } from "react";
 
 export default function ThemeHandler({ children }: { children: React.ReactNode }) {

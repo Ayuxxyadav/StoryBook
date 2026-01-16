@@ -7,7 +7,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { useEffect } from "react";
 import { themeAtom } from "../../store/atoms/themeAtom";
 import { userAtom } from "../../store/atoms/userAtom";
-import NavbarSkeleton from "./navBarSkeleton/page";
+import { NavbarSkeleton } from "../utils/Skeleton/NavBar";
 import { ProfilePage } from "../utils/profile";
 
 export default function NavPage() {

@@ -1,8 +1,9 @@
 "use client";
 
 import { Skeleton } from "@mui/material";
+import {  Box, Card, CardContent } from "@mui/material";
 
-export default function NavbarSkeleton() {
+export function NavbarSkeleton() {
   return (
     <div className="fixed top-0 left-0 w-full z-50 px-4">
       <div className="mt-4 max-w-6xl mx-auto bg-white/70 dark:bg-black/60 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-lg rounded-2xl">
@@ -29,3 +30,5 @@ export default function NavbarSkeleton() {
     </div>
   );
 }
+
+
