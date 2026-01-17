@@ -1,135 +1,103 @@
 "use client";
+
 import { useParams, useRouter } from "next/navigation";
-import { useRecoilState } from "recoil";
-import { storyAtom } from "../../../../store/atoms/storyAtom";
 import { useEffect, useState } from "react";
-import { useStories } from "../../../../Actions/useStories";
-import axios from "axios";
-import { BACKEND_URL } from "../../../../config";
+import { UseStories } from "../../../../Actions/useStories";
+import { useRecoilValue } from "recoil";
+import { StoryAtom } from "../../../../store/atoms/storyAtom";
 
 export default function EditPage() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const router = useRouter();
-  const [stories, setStories] = useRecoilState(storyAtom);
-  const { editStory } = useStories();
-
-
-
-
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
-  const [isPageLoading, setIsPageLoading] = useState(true);
-  const [isUpdating, setIsUpdating] = useState(false);
 
-
-
+  const { UpdateStory } = UseStories();
+  const stories = useRecoilValue(StoryAtom);
 
   useEffect(() => {
-    const fetchCurrentStory = async () => {
-
-      let story = stories.find((s) => s.id === id);
-    
-      if (!story) {
-        try {
-          const res = await axios.get(`${BACKEND_URL}/story/${id}`, {
-            headers: { Authorization: localStorage.getItem("token") }
-          });
-          story = res.data.story || res.data; 
-        } catch (err) {
-          console.error("Story fetch failed", err);
-        }
-      }
-
-      if (story) {
-        setTitle(story.Title);
-        setDescription(story.Description);
-        setContent(story.Content); 
-      }
-      setIsPageLoading(false);
-    };
-
-    fetchCurrentStory();
+    const existingStory = stories.find((s) => s.StoryId === id);
+    if (existingStory) {
+      setTitle(existingStory.title);
+      setDescription(existingStory.description);
+      setContent(existingStory.content);
+    }
   }, [id, stories]);
 
-  const handleUpdate = async () => {
-    if (!title || !description || !content) {
-      alert("Please fill all fields");
-      return;
-    }
-
-    setIsUpdating(true);
-    const res = await editStory(id as string, title, description, content);
-    setIsUpdating(false);
-
-    if (res.success) {
-      router.push("/dashboard");
-    } else {
-      alert("Failed to update story.");
-    }
+  const handleEdit = async () => {
+    await UpdateStory(id as string, title, description, content);
+    router.push("/dashboard"); // optional redirect
   };
 
-  if (isPageLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4">
-      <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-2xl rounded-3xl overflow-hidden">
-        <div className="p-8 sm:p-12">
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-8 border-b dark:border-gray-700 pb-4">
-            Edit Your Masterpiece
-          </h2>
-          
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Story Title</label>
-              <input 
-                value={title} 
-                onChange={(e) => setTitle(e.target.value)} 
-                className="w-full p-4 bg-gray-50 dark:bg-gray-700 border dark:border-gray-600 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white" 
-              />
-            </div>
+    <div className="min-h-screen px-4 py-16 sm:px-8 lg:px-16 flex items-center justify-center">
+      <div className="w-full max-w-2xl rounded-2xl bg-blue-700 p-6 sm:p-8 shadow-xl">
+        
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+            Edit Story
+          </h1>
+          <p className="mt-2 text-sm sm:text-base text-blue-100">
+            Update your story details
+          </p>
+        </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Short Description</label>
-              <textarea 
-                value={description} 
-                onChange={(e) => setDescription(e.target.value)} 
-                className="w-full p-4 bg-gray-50 dark:bg-gray-700 border dark:border-gray-600 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white h-24" 
-              />
-            </div>
+        {/* Form */}
+        <div className="space-y-4">
+          {/* Title */}
+          <input
+            type="text"
+            placeholder="Story title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full rounded-lg bg-white px-4 py-3
+                       text-sm sm:text-base text-black
+                       outline-none focus:ring-2 focus:ring-blue-300"
+          />
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Main Content</label>
-              <textarea 
-                value={content} 
-                onChange={(e) => setContent(e.target.value)} 
-                className="w-full p-4 bg-gray-50 dark:bg-gray-700 border dark:border-gray-600 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white h-72" 
-                placeholder="Story content should appear here..."
-              />
-            </div>
-            
-            <div className="flex gap-4 pt-4">
-              <button 
-                onClick={() => router.push("/dashboard")} 
-                className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 p-4 rounded-xl font-bold hover:bg-gray-200 transition"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleUpdate} 
-                disabled={isUpdating}
-                className="flex-[2] bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-xl font-bold shadow-lg disabled:bg-indigo-400 transition transform active:scale-95"
-              >
-                {isUpdating ? "Saving..." : "Update Story"}
-              </button>
-            </div>
+          {/* Description */}
+          <input
+            type="text"
+            placeholder="Short description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full rounded-lg bg-white px-4 py-3
+                       text-sm sm:text-base text-black
+                       outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          {/* Content */}
+          <textarea
+            placeholder="Edit your story content..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            rows={6}
+            className="w-full resize-none rounded-lg bg-white px-4 py-3
+                       text-sm sm:text-base text-black
+                       outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          {/* Actions */}
+          <div className="flex items-center justify-end gap-3 pt-4">
+            <button
+              onClick={() => router.back()}
+              className="rounded-lg bg-white/20 px-4 py-2 text-sm
+                         font-medium text-white hover:bg-white/30 transition"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={handleEdit}
+              className="rounded-lg bg-white px-6 py-2 text-sm
+                         font-semibold text-blue-700
+                         hover:bg-gray-200 transition"
+            >
+              Save Changes
+            </button>
           </div>
         </div>
       </div>

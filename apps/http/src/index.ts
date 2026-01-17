@@ -19,7 +19,7 @@ app.use(express.json())
 
 app.use(cors({
     origin: "http://localhost:3000", 
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     credentials: true
 }));
 
@@ -108,13 +108,29 @@ const storyData = await prisma.story.findMany({
     select : {
         id:true,
         Title:true,
-        Description:true
+        Description:true,
+        Content:true,
     }
 })
 return res.status(200).json({
     message:"Here all your StoryBooks",
     story:storyData
 })
+})
+app.patch("/story-place/:id",Middleware, async(req:Request ,res:Response )=>{
+const { id } = req.params;
+    const userId = req.userId;
+
+    try {
+        const story = await prisma.story.update({
+            where: { id, authorId: userId }, 
+            data: { isPublic: true }
+        });
+        res.json({ message: "Shared to StorySpace! ", story });
+    } catch (e) {
+        res.status(400).json({ message: "Share failed" });
+    }
+    
 })
 app.post("/create",Middleware,async(req:Request,res:Response)=>{
   const parsedData= createStorySchema.safeParse(req.body)
@@ -151,12 +167,14 @@ app.put("/edit/:id",Middleware,async(req:Request,res:Response)=>{
     const {title , description , content} = req.body;
     const userId = req.userId
 
+
     if(!id){
         return res.status(400).json({
             message:"StoryId not provided"
         })
     }
    try {
+
         const storyData = await prisma.story.findUnique({
         where : {
             id : id

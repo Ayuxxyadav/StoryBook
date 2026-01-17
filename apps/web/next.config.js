@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+
   transpilePackages: ['recoil'],
      images: {
     remotePatterns: [
@@ -25,3 +26,6 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
+
+

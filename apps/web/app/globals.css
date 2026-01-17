@@ -1,22 +1,26 @@
 @import "tailwindcss";
 
-@variant dark (&:where(.dark, .dark *));
-
-/* Default (Light Mode) Variables */
+/* LIGHT MODE */
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
+  --bg: 244 244 245;        /* zinc-100 */
+  --text: 24 24 27;        /* zinc-900 */
+  --muted: 113 113 122;    /* zinc-500 */
+  --border: 228 228 231;   /* zinc-200 */
 }
 
-/* Dark Mode Variables */
+/* DARK MODE */
 .dark {
-  --background: #0f172a; /* Dark Blue/Slate */
-  --foreground: #ffffff;
+  --bg: 9 9 11;            /* zinc-950 */
+  --text: 250 250 250;     /* white */
+  --muted: 161 161 170;    /* zinc-400 */
+  --border: 39 39 42;      /* zinc-800 */
 }
 
-/* In variables ko poore body par apply karein */
+html {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--text));
+}
+
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
 }

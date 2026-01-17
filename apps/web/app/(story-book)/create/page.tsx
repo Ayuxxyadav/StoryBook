@@ -1,50 +1,90 @@
 "use client";
+
 import { useState } from "react";
-import { useStories } from "../../../Actions/useStories"; 
+import { UseStories } from "../../../Actions/useStories";
 import { useRouter } from "next/navigation";
 
-export default function CreatePage() {
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [content, setContent] = useState("");
-  const { createStory } = useStories();
+export default function Create() {
   const router = useRouter();
+  const { CreateStory } = UseStories();
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
 
   const handleCreate = async () => {
-    if(!title || !content) return alert("Title and Content are required");
-    const res = await createStory(title, desc, content);
-    if(res.success) {
-      router.push("/dashboard");
-    }
+    await CreateStory(title, description, content);
+    router.push("/dashboard"); // optional redirect
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 flex justify-center items-start">
-      <div className="max-w-2xl w-full bg-white shadow-2xl rounded-3xl p-10 mt-10 border border-gray-100">
-        <h2 className="text-3xl font-extrabold mb-8 text-gray-800 border-b pb-4">Create New Story</h2>
+    <div className="min-h-screen px-4 py-16 sm:px-8 lg:px-16 flex items-center justify-center">
+      <div className="w-full max-w-2xl rounded-2xl bg-blue-700 p-6 sm:p-8 shadow-xl">
         
-        <div className="space-y-6">
-          <input 
-            className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition text-gray-700" 
-            placeholder="Story Title" 
-            onChange={e => setTitle(e.target.value)} 
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+            Create New Story
+          </h1>
+          <p className="mt-2 text-sm sm:text-base text-blue-100">
+            Write and publish your story
+          </p>
+        </div>
+
+        {/* Form */}
+        <div className="space-y-4">
+          {/* Title */}
+          <input
+            type="text"
+            placeholder="Story title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full rounded-lg bg-white px-4 py-3
+                       text-sm sm:text-base text-black
+                       outline-none focus:ring-2 focus:ring-blue-300"
           />
-          <input 
-            className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition text-gray-700" 
-            placeholder="Short Description" 
-            onChange={e => setDesc(e.target.value)} 
+
+          {/* Description */}
+          <input
+            type="text"
+            placeholder="Short description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full rounded-lg bg-white px-4 py-3
+                       text-sm sm:text-base text-black
+                       outline-none focus:ring-2 focus:ring-blue-300"
           />
-          <textarea 
-            className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition text-gray-700 h-56 resize-none" 
-            placeholder="Start writing your story content..." 
-            onChange={e => setContent(e.target.value)} 
+
+          {/* Content */}
+          <textarea
+            placeholder="Write your story content..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            rows={6}
+            className="w-full resize-none rounded-lg bg-white px-4 py-3
+                       text-sm sm:text-base text-black
+                       outline-none focus:ring-2 focus:ring-blue-300"
           />
-          <button 
-            onClick={handleCreate} 
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-xl font-bold text-lg shadow-lg transform transition active:scale-95"
-          >
-            Publish Story
-          </button>
+
+          {/* Actions */}
+          <div className="flex items-center justify-end gap-3 pt-4">
+            <button
+              onClick={() => router.back()}
+              className="rounded-lg bg-white/20 px-4 py-2 text-sm
+                         font-medium text-white hover:bg-white/30 transition"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={handleCreate}
+              className="rounded-lg bg-white px-6 py-2 text-sm
+                         font-semibold text-blue-700
+                         hover:bg-gray-200 transition"
+            >
+              Create Story
+            </button>
+          </div>
         </div>
       </div>
     </div>

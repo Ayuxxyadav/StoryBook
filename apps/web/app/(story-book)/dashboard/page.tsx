@@ -1,110 +1,92 @@
 "use client";
 
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { storyAtom } from "../../../store/atoms/storyAtom";
-import { useStories } from "../../../Actions/useStories";
+import { useRecoilValueLoadable } from "recoil";
+import { StoryAtom } from "../../../store/atoms/storyAtom";
+import MyStoryBookSkeleton from "../../../component/utils/Skeleton/Story";
+import { UseStories } from "../../../Actions/useStories";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import axios from "axios";
-import { BACKEND_URL } from "../../../config";
 
 export default function Dashboard() {
-  const stories = useRecoilValue(storyAtom);
-  const setStories = useSetRecoilState(storyAtom);
-  const { deleteStory } = useStories();
   const router = useRouter();
+  const { DeleteStory } = UseStories();
+  const storiesLoadable = useRecoilValueLoadable(StoryAtom);
 
-  useEffect(() => {
-    const fetchStories = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
+  if (storiesLoadable.state === "loading") {
+    return (
+      <div className="p-6 sm:p-10">
+        <MyStoryBookSkeleton />
+      </div>
+    );
+  }
 
-        const res = await axios.get(`${BACKEND_URL}/my-story-book`, {
-          headers: { Authorization: token },
-        });
+  if (storiesLoadable.state === "hasError") {
+    return (
+      <div className="p-10 text-red-500">
+        Something went wrong
+      </div>
+    );
+  }
 
-        setStories(res.data.story || []);
-      } catch (e) {
-        console.error("Fetch failed", e);
-      }
-    };
-
-    fetchStories();
-  }, [setStories]);
+  const stories = storiesLoadable.contents;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-26">
-      <div className="max-w-7xl mx-auto">
-        
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">
-              My Storybooks
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400">
-              Manage and edit your creative stories
-            </p>
-          </div>
-
-          <button
-            onClick={() => router.push("/create")}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-full font-medium shadow-lg"
-          >
-            + Create New Story
-          </button>
-        </div>
-
-        {/* Stories */}
-        {stories.length === 0 ? (
-          <div className="text-center py-20 border-2 border-dashed border-gray-300 rounded-xl">
-            <p className="text-gray-500">
-              No stories yet. Start writing your first masterpiece!
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {stories.map((story) => (
-              <div
-                key={story.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow border"
-              >
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2 line-clamp-1">
-                    {story.Title}
-                  </h3>
-
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                    {story.Description}
-                  </p>
-
-                  <div className="flex justify-between pt-4 border-t">
-                    <button
-                      onClick={() => router.push(`/edit/${story.id}`)}
-                      className="text-indigo-600 font-semibold text-sm"
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        if (confirm("Delete this story?")) {
-                          deleteStory(story.id);
-                        }
-                      }}
-                      className="text-red-500 font-semibold text-sm"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
+    <div className="min-h-screen px-4 py-26 sm:px-8 lg:px-16">
+      {/* Header */}
+      <div className="mb-10">
+        <h1 className="text-2xl sm:text-3xl font-bold">
+          My Stories
+        </h1>
+        <p className="mt-2 text-sm sm:text-base text-zinc-500 dark:text-zinc-400">
+          Manage your content easily
+        </p>
       </div>
+
+      {/* Grid */}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {stories.map((story, index) => (
+          <div
+            key={index}
+            className="flex flex-col rounded-2xl bg-blue-700 p-6
+                       shadow-md transition hover:shadow-xl"
+          >
+            {/* Title */}
+            <h2 className="text-lg sm:text-xl font-semibold text-white mb-2 line-clamp-1">
+              {story.title}
+            </h2>
+
+            {/* Description */}
+            <p className="text-sm sm:text-base text-blue-100 line-clamp-3 mb-6">
+              {story.description}
+            </p>
+
+            {/* Actions */}
+            <div className="mt-auto flex items-center justify-between">
+              <button
+                onClick={() => router.push(`/edit/${story.StoryId}`)}
+                className="rounded-lg bg-white/90 px-4 py-2 text-sm font-medium
+                           text-black hover:bg-gray-300 transition"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() => DeleteStory(story.StoryId)}
+                className="rounded-lg px-4 py-2 text-sm font-medium bg-red-500
+                           text-white hover:bg-red-700 transition"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Empty State */}
+      {stories.length === 0 && (
+        <div className="mt-24 text-center text-zinc-500 dark:text-zinc-400">
+          No stories yet ✍️
+        </div>
+      )}
     </div>
   );
 }
