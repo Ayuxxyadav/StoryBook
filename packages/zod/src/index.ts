@@ -10,8 +10,20 @@ export const signinSchema = z.object({
     username:z.string("username must be unique").min(3),
     password:z.string("password must be atleast 4 characters").min(3)
 })
+
 export const createStorySchema = z.object({
-    title:z.string("Title must be atleast 4 characters").min(3),
-    description:z.string("Description must be atleast 8 characters").min(7),
-    content:z.string("Description must be atleast 10 characters").min(9)
-})
+  title: z
+    .string()
+    .min(3, "Title must be at least 3 characters"),
+
+  description: z
+    .string()
+    .min(7, "Description must be at least 7 characters")
+    .optional()
+    .or(z.literal("")),
+
+  content: z
+    .string()
+    .min(9, "Content must be at least 9 characters"),
+});
+

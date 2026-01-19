@@ -18,31 +18,48 @@ export const  UseStories = () => {
 
 
 
-const CreateStory = async (title : string , description : string ,content : string) => {
-try {
-    const res = await axios.post(`${BACKEND_URL}/create`,{
-    title , description , content
-  },{
-    headers : {
-      Authorization : localStorage.getItem("token")
+const CreateStory = async (
+  title: string,
+  description: string,
+  content: string,
+  image?: File
+) => {
+  try {
+    if (typeof window === "undefined") {
+      return null;
     }
-  })
-  const NewData = {
-    StoryId :res.data.StoryBookId,
-    isPublic:res.data.isPublic,
-    title : title,
-    description : title,
-    content : content
-  }
-  setStory((prev)=> [NewData , ...prev])
 
-  alert ("creted successfully")
-  router.push("/dashboard")
-} catch (error) {
-  console.error(error);
-      return { success: false }
-}
-}
+  
+
+    const res = await axios.post(
+      `${BACKEND_URL}/create`,
+      {title,description,content,image},
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    const NewData = {
+      StoryId: res.data.id,
+      isPublic: res.data.isPublic,
+      title: title,
+      description: description,
+      content: content,
+      imageUrl: res.data.imageUrl ?? null,
+    };
+
+    setStory((prev) => [NewData, ...prev]);
+
+    alert("Created successfully");
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    return { success: false };
+  }
+};
 
 
 const DeleteStory = async (Id:string) => {
@@ -87,28 +104,36 @@ const UpdateStory = async (id:string , title : string , description : string , c
   }
 
 }
-const ShareStory = async (id: string) => {
-    try {
-      if (typeof window === "undefined") return null;
 
-      // Backend ko request bhej rahe hain status badalne ke liye
-      const res = await axios.patch(`${BACKEND_URL}/story-place/${id}`, {}, {
-        headers: {
-          Authorization: localStorage.getItem("token")
-        }
-      });
-
-      // Recoil state ko update karna taaki UI par "Public" badge aa sake
-      // Note: Iske liye aapki Story interface mein 'isPublic' property honi chahiye
-      setStory((prev) => prev.map((story) => 
-        story.StoryId === id ? { ...story, isPublic: true } : story
-      ));
-
-      alert("🚀 Story shared to StorySpace successfully!");
-    } catch (error) {
-      console.error("Error sharing story:", error);
-      alert("Failed to share story. Try again!");
+const FeatureStory = async (Id: string) => {
+  try {
+    if (typeof window === "undefined") {
+      return null;
     }
+
+    const res = await axios.put(
+      `${BACKEND_URL}/feature/${Id}`,
+      {},
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+
+    setStory((prev) =>
+      prev.map((s) =>
+        s.StoryId === Id
+          ? { ...s, isPublic: true }
+          : s
+      )
+    );
+    alert("Your story live on StoryPlace")
+  } catch (error) {
+    console.log(error);
   }
-return {CreateStory ,DeleteStory ,UpdateStory ,ShareStory}
+};
+
+
+return {CreateStory ,DeleteStory ,UpdateStory,FeatureStory}
 }

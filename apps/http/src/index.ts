@@ -7,6 +7,7 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import cors from "cors"
 import Middleware from "./middleware";
+import { uploadImage } from "./middleware";
 
 
 
@@ -105,63 +106,141 @@ const storyData = await prisma.story.findMany({
     where:{
         authorId:UserId
     },
-    select : {
-        id:true,
-        Title:true,
-        Description:true,
-        Content:true,
-    }
+    
+    orderBy: {
+      createdAt: "desc",
+    },
 })
 return res.status(200).json({
     message:"Here all your StoryBooks",
     story:storyData
 })
 })
-app.patch("/story-place/:id",Middleware, async(req:Request ,res:Response )=>{
-const { id } = req.params;
+app.get("/story/:id", Middleware, async (req: Request, res: Response) => {
+  const UserId = req.userId; // Middleware se user id
+  const storyId = req.params.id; // URL parameter se story id
+
+  if (!UserId) {
+    return res.status(403).json({
+      message: "Unauthorized",
+    });
+  }
+
+  try {
+    const story = await prisma.story.findFirst({
+      where: {
+        id: storyId,
+        authorId: UserId, // Taaki koi dusra user aapki private story na dekh sake
+      },
+    });
+
+    if (!story) {
+      return res.status(404).json({
+        message: "Story not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Story fetched successfully",
+      story: story,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+});
+
+app.get("/story-place",async(req:Request ,res:Response)=>{
+    const stories = await prisma.story.findMany({
+    where: {
+      isPublic: true,
+    },
+    include: {
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  res.json(stories);
+})
+
+
+app.put("/feature/:id",Middleware,async(req:Request , res:Response)=>{
+    const { id } = req.params;
+  const authorId = req.userId;
+
+  const story = await prisma.story.updateMany({
+    where: {
+      id,
+      authorId, 
+    },
+    data: {
+      isPublic: true,
+    },
+  });
+
+  res.json({ message: "Story featured successfully" });
+})
+
+app.post(
+  "/create",
+  Middleware,
+  uploadImage.single("image"),
+  async (req: Request, res: Response) => {
+
+    
+    const parsedData = createStorySchema.safeParse({
+      title: req.body.title,
+      description: req.body.description,
+      content: req.body.content,
+    });
+
+    if (!parsedData.success) {
+      return res.status(400).json({
+        message: "Story Schema input validation failed",
+        errors: parsedData.error
+      });
+    }
+
+    const { title, description, content } = parsedData.data;
+
+    const imageUrl = req.file ? req.file.path : null;
     const userId = req.userId;
 
-    try {
-        const story = await prisma.story.update({
-            where: { id, authorId: userId }, 
-            data: { isPublic: true }
-        });
-        res.json({ message: "Shared to StorySpace! ", story });
-    } catch (e) {
-        res.status(400).json({ message: "Share failed" });
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-    
-})
-app.post("/create",Middleware,async(req:Request,res:Response)=>{
-  const parsedData= createStorySchema.safeParse(req.body)
-  if(!parsedData.success){
-    return res.status(400).json({
-        message:"Story Schema  input validation failed"
-    })
-  }
-    const {title , description , content} = parsedData.data
-    
-    const userId = (req.userId)
-    if(!userId){
-        return null;
-    }
-
 
     const storyData = await prisma.story.create({
-        data : {
-            Title: title,
-            Description : description,
-            Content : content,
-            authorId :userId
-        }
-    })
+      data: {
+        Title: title,
+        Description: description || null,
+        Content: content,
+        imageUrl,
+        isPublic: false,
+        authorId: userId,
+      },
+    });
 
     return res.status(201).json({
-        message:"Your storybook is created successfully",
-        StoryBookId:storyData.id
-        
-    })
-})
+      message: "Your storybook is created successfully",
+      StoryBookId: storyData.id,
+      isPublic: storyData.isPublic,
+      imageUrl: storyData.imageUrl,
+    });
+  }
+);
+
+
+
 app.put("/edit/:id",Middleware,async(req:Request,res:Response)=>{
     const {id} = req.params
     const {title , description , content} = req.body;
@@ -207,6 +286,8 @@ app.put("/edit/:id",Middleware,async(req:Request,res:Response)=>{
    }
 
 })
+
+
 app.delete("/delete/:id",Middleware,async(req:Request,res:Response)=>{
     const storyId =req.params.id;
     const userId = req.userId

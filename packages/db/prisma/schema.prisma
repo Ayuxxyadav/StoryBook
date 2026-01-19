@@ -26,12 +26,14 @@ model User {
   stories       Story[]
 }
 
-model Story{
-  id           String          @unique       @default(uuid())
-  Title        String          @unique
+model Story {
+  id           String   @id @default(uuid())
+  Title        String   @unique
   Description  String?
   Content      String
+  imageUrl     String?     
   isPublic     Boolean  @default(false)
   authorId     String
-  author        User        @relation(fields:[authorId], references:[id])
+  author       User     @relation(fields: [authorId], references: [id])
+  createdAt    DateTime   @default(now())
 }
