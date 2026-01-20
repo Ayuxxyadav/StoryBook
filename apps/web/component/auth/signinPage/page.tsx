@@ -44,7 +44,7 @@ const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
     setIsLoggedIn(true);
 
     router.push("/");
-    
+
   } catch (error) {
     console.error(error);
     toast.success("Invalid email or password");
@@ -54,45 +54,47 @@ const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
 }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-4 text-white">
-      <div className="w-full max-w-md space-y-8 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8 backdrop-blur-xl shadow-2xl">
+         
+
+    <div className="flex min-h-screen items-center text-black justify-center px-4 ">
+      <div className="w-full max-w-md space-y-8 rounded-2xl border border-[#d9c5a0] bg-[#d9c5a0] p-8 backdrop-blur-xl shadow-2xl">
         
         {/* Header */}
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight">Welcome back</h2>
-          <p className="mt-2 text-sm text-zinc-400">Please enter your details to sign in</p>
+          <p className="mt-2 text-sm ">Please enter your details to sign in</p>
         </div>
 
         {/* Form */}
         <div className="mt-8 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1.5">Username</label>
+            <label className="block text-sm font-medium mb-1.5">Username</label>
             <input
               type="email"
-              placeholder="name@company.com"
+              placeholder="God Of War"
               value={username}
               onChange={(e) => setUserName(e.target.value)}
-              className="w-full rounded-lg bg-zinc-800 border border-zinc-700 p-3 text-sm outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600"
+              className="w-full rounded-lg  border  p-3 text-sm outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-sm font-medium text-zinc-400">Password</label>
+              <label className="block text-sm font-medium">Password</label>
             </div>
             <input
               type="password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg bg-zinc-800 border border-zinc-700 p-3 text-sm outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600"
+              className="w-full rounded-lg border border-zinc-700 p-3 text-sm outline-none focus:ring-2 focus:ring-blue-500/50 transition-all "
             />
           </div>
 
           <button
             disabled={loading}
             onClick={handleSignIn}
-            className="w-full mt-2 rounded-lg bg-white p-3 text-sm font-bold text-black transition-all hover:bg-zinc-200 active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-white/5"
+            className="w-full mt-2 rounded-lg bg-white p-3 text-sm font-bold text-black transition-all hover:bg-yellow-100 active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-white/5"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
@@ -101,7 +103,7 @@ const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
         {/* Footer */}
         <p className="text-center text-sm text-zinc-500">
           Don't have an account?{" "}
-          <Link href="/auth/signup" className="text-blue-400 font-medium hover:underline">
+          <Link href="/auth/signup" className="text-black font-medium hover:underline">
             Sign up
           </Link>
         </p>

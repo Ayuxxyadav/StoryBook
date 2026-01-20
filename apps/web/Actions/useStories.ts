@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast"
 import axios from "axios"
 import { BACKEND_URL } from "../config"
 import { useSetRecoilState } from "recoil"
-import { StoryAtom , Story} from "../store/atoms/storyAtom"
+import { StoryAtom , Story, PublicStoryAtom} from "../store/atoms/storyAtom"
 import { useRouter } from "next/navigation" 
 
 
@@ -14,6 +14,8 @@ export const  UseStories = () => {
 
   const router  = useRouter()
   const setStory = useSetRecoilState(StoryAtom)
+  const publicSetStory = useSetRecoilState(PublicStoryAtom)
+
 
 
 
@@ -133,6 +135,7 @@ const FeatureStory = async (Id: string) => {
           : s
       )
     );
+    publicSetStory((prev)=> [...st])
      toast.success("Your storybook  live successfully");
   } catch (error) {
     console.log(error);

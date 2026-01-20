@@ -1,16 +1,27 @@
 "use client";
 
-import { useRecoilValueLoadable } from "recoil";
+import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import { StoryAtom } from "../../../store/atoms/storyAtom";
 import MyStoryBookSkeleton from "../../../component/utils/Skeleton/Story";
 import { UseStories } from "../../../Actions/useStories";
 import { useRouter } from "next/navigation";
 import { Plus, Trash2, Edit3, Share, Globe, Lock } from "lucide-react";
+import { isLoggedInAtom } from "../../../store/atoms/authAtom";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function Dashboard() {
   const router = useRouter();
   const { DeleteStory, FeatureStory } = UseStories();
   const storiesLoadable = useRecoilValueLoadable(StoryAtom);
+  const IsLoggedIn = useRecoilValue(isLoggedInAtom);
+
+useEffect(() => {
+  if (!IsLoggedIn) {
+    toast.error("Please login first to access Dashboard", { id: "login-required" });
+    router.replace("/auth/signin");
+  }
+}, [IsLoggedIn, router]);
 
   if (storiesLoadable.state === "loading") {
     return <div className="min-h-screen  p-10"><MyStoryBookSkeleton /></div>;

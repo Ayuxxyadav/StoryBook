@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UseStories } from "../../../Actions/useStories";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Type, FileText, ImageIcon, Send } from "lucide-react";
+import { useRecoilValue } from "recoil";
+import { isLoggedInAtom } from "../../../store/atoms/authAtom";
+import toast from "react-hot-toast";
+
 
 export default function Create() {
   const router = useRouter();
@@ -14,6 +18,18 @@ export default function Create() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+    const IsLoggedIn = useRecoilValue(isLoggedInAtom);
+  
+  useEffect(() => {
+    if (!IsLoggedIn) {
+      toast.error("Please login first", { id: "login-required" });
+      router.replace("/auth/signin");
+    }
+  }, [IsLoggedIn, router]);
+
+  if (!IsLoggedIn) {
+  return null; 
+}
 
   const handleCreate = async () => {
     setLoading(true);

@@ -5,10 +5,13 @@ import { PublicStoryAtom, StoryAtom } from "../../store/atoms/storyAtom";
 import MyStoryBookSkeleton from "../utils/Skeleton/Story"; 
 import { useRouter } from "next/navigation";
 import { BookOpen, Scroll, Wind } from "lucide-react";
+import { useEffect } from "react";
 
 export default function HomePage() {
   const router = useRouter();
   const storiesLoadable = useRecoilValueLoadable(PublicStoryAtom);
+
+  useEffect(()=>{},[StoryAtom])
 
   if (storiesLoadable.state === "loading") {
     return <div className="min-h-screen p-10"><MyStoryBookSkeleton /></div>;
@@ -23,11 +26,11 @@ export default function HomePage() {
       {/* 1. VINTAGE OVERLAY */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-30 mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-32">
+      <div className="relative z-10 max-w-7xl mx-auto px-6  pt-20 pb-32">
         
         {/* HERO SECTION - Newspaper Masthead Style */}
         <header className="text-center border-b-4 border-double border-[#2d2a26] pb-12 mb-16">
-          <div className="flex justify-center mb-4 opacity-80">
+          <div className="flex justify-center my-3 mb-4 opacity-80">
             <Wind size={40} className="animate-pulse" />
           </div>
           <h1 className="text-3xl md:text-3xl font-black uppercase tracking-tight leading-none">
@@ -113,7 +116,7 @@ export default function HomePage() {
              @StoryBook
            </div>
            <div className="flex gap-8">
-             <button onClick={() => router.push('/auth/signin')} className="text-xs uppercase font-bold hover:underline">Officer Login</button>
+            
              <button className="text-xs uppercase font-bold hover:underline"onClick={() => router.push('/dashboard')}>Archive Code</button>
            </div>
         </footer>
