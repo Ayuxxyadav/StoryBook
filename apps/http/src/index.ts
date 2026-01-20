@@ -94,6 +94,38 @@ app.post("/signin",async(req:Request,res:Response)=>{
 })
 
 
+app.get("/Story-Book",async(req:Request,res:Response)=>{
+
+  const Story = await prisma.story.findMany({
+    where : {isPublic : true},
+    orderBy : {createdAt:"desc"}
+  })
+
+  return res.status(200).json({
+    message:"fetched data successfully ",
+    story : Story
+
+  })
+})
+
+
+app.get("/Story-Book/:id",async(req:Request,res:Response)=>{
+
+  const StoryId= req.params.id
+
+  const Story = await prisma.story.findMany({
+    where : {id: StoryId},
+    orderBy : {createdAt:"desc"}
+  })
+
+  return res.status(200).json({
+    message:"fetched data successfully ",
+    story : Story
+
+  })
+})
+
+
 // route for gettting list of data 
 app.get("/my-story-book",Middleware,async(req:Request, res: Response)=>{
 const UserId = req.userId;

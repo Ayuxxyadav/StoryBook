@@ -1,25 +1,24 @@
 "use client";
 
 import { useRecoilValueLoadable } from "recoil";
-import { StoryAtom } from "../../store/atoms/storyAtom"; 
+import { PublicStoryAtom, StoryAtom } from "../../store/atoms/storyAtom"; 
 import MyStoryBookSkeleton from "../utils/Skeleton/Story"; 
 import { useRouter } from "next/navigation";
 import { BookOpen, Scroll, Wind } from "lucide-react";
 
 export default function HomePage() {
   const router = useRouter();
-  const storiesLoadable = useRecoilValueLoadable(StoryAtom);
+  const storiesLoadable = useRecoilValueLoadable(PublicStoryAtom);
 
   if (storiesLoadable.state === "loading") {
     return <div className="min-h-screen p-10"><MyStoryBookSkeleton /></div>;
   }
 
-  // Filter only public stories
-  const allStories = storiesLoadable.state === "hasValue" ? storiesLoadable.contents : [];
-  const publicStories = allStories.filter((story: any) => story.isPublic === true);
+
+  const publicStories = storiesLoadable.contents 
 
   return (
-    <div className="relative min-h-screen  font-serif overflow-x-hidden">
+    <div className="relative min-h-screen font-serif overflow-x-hidden">
       
       {/* 1. VINTAGE OVERLAY */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-30 mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]" />
@@ -51,7 +50,7 @@ export default function HomePage() {
             publicStories.map((story: any, index: number) => (
               <div
                 key={index}
-                onClick={() => router.push(`/story/${story.StoryId}`)}
+                onClick={() => router.push(`/Story-Book/${story.StoryId}`)}
                 className="group cursor-pointer relative flex flex-col bg-[#f4e4c1]/30 border border-[#2d2a26]/20 p-5 hover:bg-[#f4e4c1]/60 transition-all duration-500 shadow-sm hover:shadow-2xl"
               >
                 {/* Image Section - Vintage Polaroid Style */}
