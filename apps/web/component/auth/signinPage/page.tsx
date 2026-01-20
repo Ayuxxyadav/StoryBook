@@ -1,5 +1,5 @@
 "use client";
-
+import { toast } from "react-hot-toast";
 import axios from "axios";
 import { BACKEND_URL } from "../../../config";
 import { useEffect, useState } from "react";
@@ -14,11 +14,13 @@ export default function Signin() {
   const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState(false);
+
 const setUser = useSetRecoilState(userAtom);
+
 const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
 
  async function handleSignIn() {
-  if (!username || !password) return alert("Please fill in all fields");
+  if (!username || !password) return toast.success("Please fill in all fields");
 
   setLoading(true);
   try {
@@ -42,9 +44,10 @@ const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
     setIsLoggedIn(true);
 
     router.push("/");
+    
   } catch (error) {
     console.error(error);
-    alert("Invalid email or password");
+    toast.success("Invalid email or password");
   } finally {
     setLoading(false);
   }

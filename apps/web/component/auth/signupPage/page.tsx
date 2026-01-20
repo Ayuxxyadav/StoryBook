@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../../../config";
 import Link from "next/link";
+import { useRecoilValue } from "recoil";
+import { isLoggedInAtom } from "../../../store/atoms/authAtom";
 
 export default function Signup() { 
   const [username, setUserName] = useState<string>("");
@@ -13,12 +15,10 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if(token) {
-        router.push("/");
-    }
-  }, []);
+  const isLoggedIn = useRecoilValue(isLoggedInAtom)
+useEffect(()=>{
+  if(isLoggedIn){router.push("/")}
+},[isLoggedIn,router])
 
   async function handleSignup() {
     if (!username || !email || !password) return alert("All fields are required");

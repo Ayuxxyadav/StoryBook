@@ -93,6 +93,8 @@ app.post("/signin",async(req:Request,res:Response)=>{
 })
 })
 
+
+// route for gettting list of data 
 app.get("/my-story-book",Middleware,async(req:Request, res: Response)=>{
 const UserId = req.userId;
 if(!UserId){
@@ -116,6 +118,9 @@ return res.status(200).json({
     story:storyData
 })
 })
+
+
+// route for getting single data 
 app.get("/story/:id", Middleware, async (req: Request, res: Response) => {
   const UserId = req.userId; // Middleware se user id
   const storyId = req.params.id; // URL parameter se story id
@@ -152,27 +157,8 @@ app.get("/story/:id", Middleware, async (req: Request, res: Response) => {
   }
 });
 
-app.get("/story-place",async(req:Request ,res:Response)=>{
-    const stories = await prisma.story.findMany({
-    where: {
-      isPublic: true,
-    },
-    include: {
-      author: {
-        select: {
-          username: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
 
-  res.json(stories);
-})
-
-
+// route for sharing via Converting IsPublic : false to true
 app.put("/feature/:id",Middleware,async(req:Request , res:Response)=>{
     const { id } = req.params;
   const authorId = req.userId;
@@ -190,6 +176,8 @@ app.put("/feature/:id",Middleware,async(req:Request , res:Response)=>{
   res.json({ message: "Story featured successfully" });
 })
 
+
+//create route with cloundinary Image Middleware
 app.post(
   "/create",
   Middleware,
@@ -240,7 +228,7 @@ app.post(
 );
 
 
-
+//edit route 
 app.put("/edit/:id",Middleware,async(req:Request,res:Response)=>{
     const {id} = req.params
     const {title , description , content} = req.body;
@@ -288,6 +276,8 @@ app.put("/edit/:id",Middleware,async(req:Request,res:Response)=>{
 })
 
 
+
+// delete route
 app.delete("/delete/:id",Middleware,async(req:Request,res:Response)=>{
     const storyId =req.params.id;
     const userId = req.userId

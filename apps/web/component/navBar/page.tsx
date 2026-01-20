@@ -35,7 +35,6 @@ useEffect(() => {
 
   const mainLinks = [
     { item: "Home", route: "/" },
-    { item: "StoryPlace", route: "/storyplace" },
     { item: "Dashboard", route: "/dashboard" },
   ];
 
@@ -52,9 +51,9 @@ useEffect(() => {
   
           <Link
             href="/"
-            className="text-xl font-extrabold tracking-tight text-blue-600"
+            className="text-xl font-extrabold tracking-wide text-[#d9c5a0]"
           >
-            STORY<span className="text-gray-900 dark:text-white">BOOK</span>
+            STORY<span className="text-white">BOOK</span>
           </Link>
 
     
@@ -63,7 +62,7 @@ useEffect(() => {
               <Link
                 key={nav.item}
                 href={nav.route}
-                className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 transition"
+                className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-[#d9c5a0] transition"
               >
                 {nav.item}
               </Link>
@@ -101,8 +100,8 @@ useEffect(() => {
                     href={nav.route}
                     className={`text-sm font-bold transition ${
                       nav.item === "Signup"
-                        ? "bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
-                        : "text-gray-700 dark:text-gray-200 hover:text-blue-600"
+                        ? "bg-[#d9c5a0] text-white px-4 py-2 rounded-xl hover:bg-yellow-500"
+                        : "text-gray-700 dark:text-gray-200 hover:text-[#d9c5a0]"
                     }`}
                   >
                     {nav.item}

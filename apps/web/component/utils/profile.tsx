@@ -24,7 +24,7 @@ export function ProfilePage() {
       
       {/* ===== Avatar (Always Visible) ===== */}
       <div className="w-10 h-10 flex items-center justify-center rounded-full 
-                      bg-blue-600 text-white font-bold cursor-pointer">
+                      bg-[#d9c5a0] text-white font-bold cursor-pointer">
         {user?.userName?.[0]?.toUpperCase() || <FiUser />}
       </div>
 
@@ -40,7 +40,7 @@ export function ProfilePage() {
         {/* User Info */}
         <div className="flex items-center gap-2 mb-3">
           <div className="w-9 h-9 flex items-center justify-center rounded-full 
-                          bg-blue-600 text-white">
+                          bg-[#d9c5a0] text-white">
             <FiUser />
           </div>
 

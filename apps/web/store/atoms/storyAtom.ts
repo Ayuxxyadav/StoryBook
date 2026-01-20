@@ -59,32 +59,43 @@ export const StoryAtom = atom<Story[]>({
 
 
 
-export const SingleStorySelector = selectorFamily<Story | null, string>({
-  key: "SingleStorySelector",
-  get: (storyId: string) => async ({ get }) => {
-    // 1. Pehle StoryAtom se data uthane ki koshish karo
-    const allStories = get(StoryAtom);
-    const cachedStory = allStories.find((s) => s.StoryId === storyId);
 
-    // 2. Agar data mil gaya, toh API call mat karo, yahi return kar do
+export const SingleStorySelector = selectorFamily< Story | null, string >({
+  key: "SingleStorySelector",
+  get: (id: string) => async ({ get }) => {
+    
+    const allStories = get(StoryAtom);
+
+    const cachedStory = allStories.find(
+      (s) => s.StoryId === id
+    );
+
     if (cachedStory) {
       return cachedStory;
     }
 
-    // 3. Agar StoryAtom khali hai (jaise Page Refresh par hota hai), toh API call karo
-    if (typeof window === "undefined" || !storyId) return null;
+    if (typeof window === "undefined") {
+      return null;
+    }
 
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+
+    // 4️⃣ API call
     try {
-      const token = localStorage.getItem("token");
-      if (!token) return null;
-
-      const res = await axios.get(`${BACKEND_URL}/story/${storyId}`, {
-        headers: { Authorization: token },
-      });
+      const res = await axios.get(
+        `${BACKEND_URL}/story/${id}`,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
 
       const s = res.data.story;
-      if (!s) return null;
 
+      if (!s) return null;
+      
       return {
         StoryId: s.id,
         title: s.Title,
@@ -94,13 +105,8 @@ export const SingleStorySelector = selectorFamily<Story | null, string>({
         imageUrl: s.imageUrl,
       };
     } catch (error) {
-      console.error("Single Fetch Error:", error);
+      console.error("Single story fetch failed:", error);
       return null;
     }
   },
-});
-
-export const SingleStoryAtom = atomFamily<Story | null, string>({
-  key: "SingleStoryAtom",
-  default: SingleStorySelector,
 });

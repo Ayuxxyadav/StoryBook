@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import NavPage from "../component/navBar/page";
 import Providers from "../component/utils/provider";
-
+import {Toaster} from "react-hot-toast"
 import ThemeHandler from "../component/utils/themeProvider";
 
 const geistSans = localFont({
@@ -33,6 +33,7 @@ export default function RootLayout({
           <NavPage/>
         <ThemeHandler>
           {children}
+          <Toaster position="bottom-right" reverseOrder={false} />
         </ThemeHandler>
         </Providers>
         

@@ -4,7 +4,7 @@ dotenv.config()
 
 const {CLOUD_NAME , CLOUDINARY_API_KEY ,CLOUDINARY_API_SECRET } =process.env
 if (!CLOUDINARY_API_KEY) {
-  console.error("Error: CLOUDINARY_API_KEY is missing from .env file!");
+  console.error("Error: CLOUDINARY_API_KEY is missing from .env file");
 }
 
 cloudinary.config({

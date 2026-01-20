@@ -1,6 +1,5 @@
 
-
-
+import { toast } from "react-hot-toast"
 import axios from "axios"
 import { BACKEND_URL } from "../config"
 import { useSetRecoilState } from "recoil"
@@ -18,25 +17,24 @@ export const  UseStories = () => {
 
 
 
-const CreateStory = async (
-  title: string,
-  description: string,
-  content: string,
-  image?: File
-) => {
+
+  // Action for creating 
+const CreateStory = async (title: string, description: string,content: string, image?: File ) => {
+
   try {
     if (typeof window === "undefined") {
       return null;
     }
 
-  
-
     const res = await axios.post(
       `${BACKEND_URL}/create`,
+
       {title,description,content,image},
+
       {
         headers: {
           Authorization: localStorage.getItem("token"),
+
           "Content-Type": "multipart/form-data",
         },
       }
@@ -53,16 +51,18 @@ const CreateStory = async (
 
     setStory((prev) => [NewData, ...prev]);
 
-    alert("Created successfully");
+    toast.success("Created storybook successfully");
     return res.data;
   } catch (error) {
     console.error(error);
+    toast.error("Failed to create storybook");
     return { success: false };
   }
 };
 
-
+// Action for delete
 const DeleteStory = async (Id:string) => {
+
   try {
     if(typeof window === "undefined"){
       return null
@@ -76,11 +76,14 @@ const DeleteStory = async (Id:string) => {
     })
 
     setStory((prev)=> prev.filter((s)=> s.StoryId !==Id))
+    toast.success("Deleted storybook successfully");
   } catch (error) {
     console.log(error)
+    toast.success("Failed to delete storybook ");
   }
 
 }
+
 const UpdateStory = async (id:string , title : string , description : string , content : string) => {
   try {
     if(typeof window === "undefined"){
@@ -97,13 +100,15 @@ const UpdateStory = async (id:string , title : string , description : string , c
   )
 
     setStory((prev)=> prev.map((story)=> story.StoryId ===id ? {...story,title,description,content}:story))
-    alert("update successfully")
+   toast.success("Updated storybook successfully");
     router.push("/dashboard")
   } catch (error) {
     console.log(error)
+     toast.error("Failed to update storybook");
   }
 
 }
+
 
 const FeatureStory = async (Id: string) => {
   try {
@@ -128,9 +133,10 @@ const FeatureStory = async (Id: string) => {
           : s
       )
     );
-    alert("Your story live on StoryPlace")
+     toast.success("Your storybook  live successfully");
   } catch (error) {
     console.log(error);
+     toast.success("Failed to share your storybook");
   }
 };
 
