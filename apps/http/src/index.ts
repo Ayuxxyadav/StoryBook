@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(cors({
     origin: ["http://localhost:3000",
       "https://story-book-web-eight.vercel.app",
-      "https://story-book-backendd.onrender.com"], 
+      "https://story-book-back.onrender.com"], 
 
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     credentials: true
