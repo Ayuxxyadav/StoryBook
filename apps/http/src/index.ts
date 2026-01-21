@@ -12,7 +12,7 @@ import { uploadImage } from "./middleware";
 
 
 dotenv.config()
-const Port = process.env.Port;
+const Port = process.env.Port || 5000;
 
 const Secret = String(process.env.JWT_SECRET)
 const app = express();
