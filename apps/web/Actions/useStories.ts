@@ -21,70 +21,79 @@ export const  UseStories = () => {
 
 
   // Action for creating 
-const CreateStory = async (title: string, description: string,content: string, image?: File ) => {
-
+const CreateStory = async (
+  title: string,
+  description: string,
+  content: string,
+  image?: File
+) => {
   try {
-    if (typeof window === "undefined") {
-      return null;
-    }
+    if (typeof window === "undefined") return null;
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("content", content);
+    if (image) formData.append("image", image);
 
     const res = await axios.post(
       `${BACKEND_URL}/create`,
-
-      {title,description,content,image},
-
+      formData,
       {
         headers: {
-          Authorization: localStorage.getItem("token"),
-
-          "Content-Type": "multipart/form-data",
+          Authorization: localStorage.getItem("token") || "",
         },
       }
     );
 
     const NewData = {
-      StoryId: res.data.id,
-      isPublic: res.data.isPublic,
-      title: title,
-      description: description,
-      content: content,
+      StoryId: res.data.StoryBookId, 
+      title,
+      description,
+      content,
+      isPublic: false,
       imageUrl: res.data.imageUrl ?? null,
     };
+  
 
     setStory((prev) => [NewData, ...prev]);
 
     toast.success("Created storybook successfully");
     return res.data;
+
   } catch (error) {
     console.error(error);
     toast.error("Failed to create storybook");
-    return { success: false };
+    return null;
   }
 };
 
+
 // Action for delete
-const DeleteStory = async (Id:string) => {
-
+const DeleteStory = async (Id: string) => {
   try {
-    if(typeof window === "undefined"){
-      return null
-    }
+    if (typeof window === "undefined") return null;
 
-    const res = await axios.delete(`${BACKEND_URL}/delete/${Id}`,
-      {
-      headers  : {
-        Authorization : localStorage.getItem("token")
-      }
-    })
+    
+    await axios.delete(`${BACKEND_URL}/delete/${Id}`, {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    });
 
-    setStory((prev)=> prev.filter((s)=> s.StoryId !==Id))
-    toast.success("Deleted storybook successfully");
+    
+    setStory((prev) => prev.filter((s) => s.StoryId !== Id));
+
+    publicSetStory((prev) => prev.filter((s) => s.StoryId !== Id));
+
+    router.refresh();
+
+    toast.success("Record burned and archives updated!");
   } catch (error) {
-    console.log(error)
-    toast.success("Failed to delete storybook ");
+    console.error("Delete Error:", error);
+    toast.error("Failed to delete the storybook");
   }
-
-}
+};
 
 const UpdateStory = async (id:string , title : string , description : string , content : string) => {
   try {
@@ -112,36 +121,38 @@ const UpdateStory = async (id:string , title : string , description : string , c
 }
 
 
+
 const FeatureStory = async (Id: string) => {
-  try {
-    if (typeof window === "undefined") {
-      return null;
+    try {
+      await axios.put(`${BACKEND_URL}/feature/${Id}`, {}, {
+        headers: { Authorization: localStorage.getItem("token") }
+      });
+
+      // Dashboard list update: isPublic ko true set karein
+      setStory((prev) =>
+        prev.map((s) => (s.StoryId === Id ? { ...s, isPublic: true } : s))
+      );
+
+      // Public list update: Pura object fetch karke feed mein add karein
+      const res = await axios.get(`${BACKEND_URL}/story/${Id}`, {
+        headers: { Authorization: localStorage.getItem("token") }
+      });
+      const s = res.data.story;
+      const mapped = {
+        StoryId: s.id,
+        title: s.Title,
+        description: s.Description,
+        content: s.Content,
+        isPublic: true,
+        imageUrl: s.imageUrl
+      };
+
+      publicSetStory((prev) => [mapped, ...prev]);
+      toast.success("Your story is now Live!");
+    } catch (error) {
+      toast.error("Failed to share story");
     }
-
-    const res = await axios.put(
-      `${BACKEND_URL}/feature/${Id}`,
-      {},
-      {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      }
-    );
-
-    setStory((prev) =>
-      prev.map((s) =>
-        s.StoryId === Id
-          ? { ...s, isPublic: true }
-          : s
-      )
-    );
-    publicSetStory((prev)=> [...st])
-     toast.success("Your storybook  live successfully");
-  } catch (error) {
-    console.log(error);
-     toast.success("Failed to share your storybook");
-  }
-};
+  };
 
 
 return {CreateStory ,DeleteStory ,UpdateStory,FeatureStory}

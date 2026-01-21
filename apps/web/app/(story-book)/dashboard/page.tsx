@@ -16,12 +16,12 @@ export default function Dashboard() {
   const storiesLoadable = useRecoilValueLoadable(StoryAtom);
   const IsLoggedIn = useRecoilValue(isLoggedInAtom);
 
-useEffect(() => {
-  if (!IsLoggedIn) {
-    toast.error("Please login first to access Dashboard", { id: "login-required" });
-    router.replace("/auth/signin");
-  }
-}, [IsLoggedIn, router]);
+  useEffect(() => {
+    if (!IsLoggedIn) {
+      toast.error("Please login first to access Dashboard", { id: "login-required" });
+      router.replace("/auth/signin");
+    }
+  }, [IsLoggedIn, router]);
 
   if (storiesLoadable.state === "loading") {
     return <div className="min-h-screen  p-10"><MyStoryBookSkeleton /></div>;
@@ -35,12 +35,12 @@ useEffect(() => {
 
   return (
     <div className="relative min-h-screen  font-serif overflow-x-hidden pb-20">
-      
+
       {/* 1. PAPER TEXTURE OVERLAY */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-30 mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24">
-        
+
         {/* VINTAGE HEADER */}
         <div className="border-b-4 border-double border-[#2d2a26] pb-8 mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
@@ -64,7 +64,9 @@ useEffect(() => {
         {/* STORIES GRID */}
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {stories.map((story, index) => (
+
             <div
+
               key={index}
               onClick={() => router.push(`/story/${story.StoryId}`)}
               className="group cursor-pointer  transition-colorsrelative flex flex-col border border-[#2d2a26]/30 bg-[#f4e4c1]/50 p-4 shadow-sm hover:shadow-xl transition-all"
@@ -109,19 +111,51 @@ useEffect(() => {
                       <Edit3 size={18} />
                     </button>
                     <button
-                      onClick={(e) => { e.stopPropagation(); DeleteStory(story.StoryId); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+
+                        toast(
+                          (t) => (
+                            <div className="flex flex-col gap-3">
+                              <p className="text-sm font-medium text-zinc-800">
+                                Are you sure you want to burn this record?
+                              </p>
+
+                              <div className="flex justify-end gap-2">
+                                <button
+                                  onClick={() => toast.dismiss(t.id)}
+                                  className="rounded-md px-3 py-1 text-sm bg-zinc-200 hover:bg-zinc-300"
+                                >
+                                  Cancel
+                                </button>
+
+                                <button
+                                  onClick={() => {
+                                    toast.dismiss(t.id);
+                                    DeleteStory(story.StoryId);
+                                  }}
+                                  className="rounded-md px-3 py-1 text-sm bg-red-600 text-white hover:bg-red-700"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          ),
+                          { duration: 6000 }
+                        );
+                      }}
                       className="hover:scale-110 transition-transform text-red-800"
                       title="Burn Record"
                     >
                       <Trash2 size={18} />
                     </button>
+
                   </div>
 
                   <button
                     onClick={(e) => { e.stopPropagation(); FeatureStory(story.StoryId); }}
-                    className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2 py-1 border border-[#2d2a26] transition-colors ${
-                      story.isPublic ? "bg-[#2d2a26] text-[#e8d5b5]" : "hover:bg-[#2d2a26] hover:text-[#e8d5b5]"
-                    }`}
+                    className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2 py-1 border border-[#2d2a26] transition-colors ${story.isPublic ? "bg-[#2d2a26] text-[#e8d5b5]" : "hover:bg-[#2d2a26] hover:text-[#e8d5b5]"
+                      }`}
                   >
                     {story.isPublic ? <Globe size={12} /> : <Lock size={12} />}
                     {story.isPublic ? "Live" : "Archive"}
@@ -145,7 +179,7 @@ useEffect(() => {
 
       {/* FOOTER DECORATION */}
       <div className="mt-20 border-t border-[#2d2a26]/20 py-10 text-center opacity-40 text-[10px] tracking-[0.5em] uppercase">
-        © The Story Book // 
+        © The Story Book //
       </div>
     </div>
   );

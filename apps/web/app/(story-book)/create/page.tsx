@@ -18,8 +18,8 @@ export default function Create() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-    const IsLoggedIn = useRecoilValue(isLoggedInAtom);
-  
+  const IsLoggedIn = useRecoilValue(isLoggedInAtom);
+
   useEffect(() => {
     if (!IsLoggedIn) {
       toast.error("Please login first", { id: "login-required" });
@@ -28,8 +28,8 @@ export default function Create() {
   }, [IsLoggedIn, router]);
 
   if (!IsLoggedIn) {
-  return null; 
-}
+    return null;
+  }
 
   const handleCreate = async () => {
     setLoading(true);
@@ -40,26 +40,26 @@ export default function Create() {
 
   return (
     <div className="relative min-h-screen   font-serif overflow-x-hidden flex items-center justify-center py-26 px-4">
-      
+
       {/* 1. PAPER TEXTURE OVERLAY */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-30 mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]" />
 
       <div className="relative z-10 w-full max-w-3xl border-2 border-[#2d2a26] p-1 bg-[#f4e4c1]/50 shadow-[10px_10px_0px_0px_rgba(45,42,38,1)]">
         <div className="border border-[#2d2a26] p-6 sm:p-10">
-          
+
           {/* VINTAGE HEADER */}
           <div className="mb-10 text-center border-b-2 border-double border-[#2d2a26] pb-6">
             <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter">
               New Dispatch
             </h1>
             <p className="mt-2 text-[10px] uppercase tracking-[0.4em] opacity-60">
-              Drafting Station • Office of Story BooK 
+              Drafting Station • Office of Story BooK
             </p>
           </div>
 
           {/* FORM AREA */}
           <div className="space-y-8">
-            
+
             {/* Title Input */}
             <div className="relative">
               <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block opacity-70">Headline</label>

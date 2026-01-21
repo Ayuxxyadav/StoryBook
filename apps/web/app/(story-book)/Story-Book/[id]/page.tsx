@@ -73,7 +73,7 @@ export default function PublicStoryDetailPage() {
         <article className="relative">
           <div className="text-lg sm:text-2xl leading-[1.6] text-justify space-y-8 whitespace-pre-line font-serif">
             {/* Drop Cap */}
-            <span className="float-left text-8xl font-black mr-4 mt-2 leading-[0.7] text-black">
+            <span className="float-left text-8xl font-black mr-4 mt-2 leading-[0.7]">
               {story.content ? story.content.charAt(0) : ""}
             </span>
             {story.content ? story.content.slice(1) : ""}
