@@ -19,9 +19,7 @@ const app = express();
 app.use(express.json())
 
 app.use(cors({
-    origin: ["http://localhost:3000",
-      "https://story-book-web-eight.vercel.app",
-      "https://story-book-back.onrender.com"], 
+    origin: ["http://localhost:3000"], 
 
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     credentials: true
@@ -114,7 +112,7 @@ app.get("/Story-Book",async(req:Request,res:Response)=>{
 
 app.get("/Story-Book/:id",async(req:Request,res:Response)=>{
 
-  const StoryId= req.params.id
+  const StoryId= req.params.id as string
 
   const Story = await prisma.story.findMany({
     where : {id: StoryId},
@@ -158,7 +156,7 @@ return res.status(200).json({
 // route for getting single data 
 app.get("/story/:id", Middleware, async (req: Request, res: Response) => {
   const UserId = req.userId; // Middleware se user id
-  const storyId = req.params.id; // URL parameter se story id
+  const storyId = req.params.id as string// URL parameter se story id
 
   if (!UserId) {
     return res.status(403).json({
@@ -195,7 +193,7 @@ app.get("/story/:id", Middleware, async (req: Request, res: Response) => {
 
 // route for sharing via Converting IsPublic : false to true
 app.put("/feature/:id",Middleware,async(req:Request , res:Response)=>{
-    const { id } = req.params;
+    const  id  = req.params.id as string
   const authorId = req.userId;
 
   const story = await prisma.story.updateMany({
@@ -265,7 +263,7 @@ app.post(
 
 //edit route 
 app.put("/edit/:id",Middleware,async(req:Request,res:Response)=>{
-    const {id} = req.params
+    const id = req.params.id as string
     const {title , description , content} = req.body;
     const userId = req.userId
 
@@ -314,7 +312,7 @@ app.put("/edit/:id",Middleware,async(req:Request,res:Response)=>{
 
 // delete route
 app.delete("/delete/:id",Middleware,async(req:Request,res:Response)=>{
-    const storyId =req.params.id;
+    const storyId =req.params.id as string
     const userId = req.userId
 
     if(!storyId){
