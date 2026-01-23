@@ -80,7 +80,7 @@ PORT=5000
 ### Frontend (.env)
 
 ```
-NEXT_PUBLIC_BACKEND_URL=https://randomthing.co.in/api
+
 ```
 
 ---
@@ -103,13 +103,13 @@ pnpm install
 ### 3️⃣ Start Backend
 
 ```bash
-pnpm --filter http-backend dev
+pnpm run dev
 ```
 
 ### 4️⃣ Start Frontend
 
 ```bash
-pnpm --filter web dev
+pnpm run dev
 ```
 
 ---
@@ -125,11 +125,6 @@ pnpm --filter web dev
 
 ---
 
-## 📸 Screenshots
-
-> Add screenshots here (Dashboard, Create Story, Public Feed)
-
----
 
 ## 🧠 Learning Outcomes
 
