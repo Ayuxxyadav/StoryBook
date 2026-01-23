@@ -1,135 +1,161 @@
-# Turborepo starter
+# StoryBook 📖
 
-This Turborepo starter is maintained by the Turborepo core team.
+A full-stack **Story Publishing Platform** where users can create, manage, and publish stories publicly. The application supports authentication, private dashboards, public story feeds, image uploads, and live publishing — built with modern web technologies and deployed on **AWS EC2 with Nginx**.
 
-## Using this example
+🌐 **Live Domain:** [https://randomthing.co.in](https://randomthing.co.in)
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
-```
+## ✨ Features
 
-## What's inside?
+* 🔐 User Authentication (Signup / Signin)
+* 📝 Create, Edit, Delete Stories
+* 🌍 Publish Stories to Public Feed (Go Live)
+* 🖼️ Image Upload Support (Cloudinary)
+* 📊 User Dashboard
+* ⚡ Instant UI updates without page refresh
+* 🔒 Protected Routes
+* 🌙 Dark UI (Clean & Minimal Design)
 
-This Turborepo includes the following packages/apps:
+---
 
-### Apps and Packages
+## 🛠️ Tech Stack
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Frontend
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+* **Next.js (App Router)**
+* **TypeScript**
+* **Tailwind CSS**
+* **Recoil** (State Management)
+* **Axios**
 
-### Utilities
+### Backend
 
-This Turborepo has some additional tools already setup for you:
+* **Node.js**
+* **Express.js**
+* **TypeScript**
+* **Prisma ORM**
+* **PostgreSQL**
+* **JWT Authentication**
+* **Multer + Cloudinary** (Image Uploads)
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+### Dev & Deployment
 
-### Build
+* **pnpm + Turborepo**
+* **AWS EC2 (Ubuntu)**
+* **Nginx (Reverse Proxy)**
+* **PM2 (Process Manager)**
+* **Vercel (Frontend)**
 
-To build all apps and packages, run the following command:
+---
 
-```
-cd my-turborepo
+## 🚀 Deployment Architecture
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
+* **Frontend:** Deployed on Vercel
+* **Backend:** Deployed on AWS EC2
+* **Reverse Proxy:** Nginx
+* **Domain:** randomthing.co.in
+* **SSL:** Enabled via Nginx
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+User → Domain (Nginx) → Backend (Node.js API)
+                    ↘ Frontend (Vercel)
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+---
+
+## 🔑 Environment Variables
+
+### Backend (.env)
 
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+DATABASE_URL=your_database_url
+JWT_SECRET=your_jwt_secret
+CLOUDINARY_CLOUD_NAME=xxxx
+CLOUDINARY_API_KEY=xxxx
+CLOUDINARY_API_SECRET=xxxx
+PORT=5000
 ```
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+### Frontend (.env)
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+NEXT_PUBLIC_BACKEND_URL=https://randomthing.co.in/api
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+---
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## 🧪 Local Development
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+### 1️⃣ Clone Repository
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```bash
+git clone https://github.com/your-username/storybook.git
+cd storybook
 ```
 
-## Useful Links
+### 2️⃣ Install Dependencies
 
-Learn more about the power of Turborepo:
+```bash
+pnpm install
+```
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+### 3️⃣ Start Backend
+
+```bash
+pnpm --filter http-backend dev
+```
+
+### 4️⃣ Start Frontend
+
+```bash
+pnpm --filter web dev
+```
+
+---
+
+## 📌 API Highlights
+
+* `POST /signup` – Create account
+* `POST /signin` – Login
+* `POST /create` – Create story
+* `PUT /feature/:id` – Publish story
+* `GET /Story-Book` – Public stories
+* `GET /Story-Book/:id` – Single public story
+
+---
+
+## 📸 Screenshots
+
+> Add screenshots here (Dashboard, Create Story, Public Feed)
+
+---
+
+## 🧠 Learning Outcomes
+
+* Real-world full stack architecture
+* Secure authentication & authorization
+* State synchronization without refresh
+* Production deployment with AWS & Nginx
+* Scalable monorepo structure
+
+---
+
+## 🤝 Contribution
+
+Contributions, issues, and feature requests are welcome.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 👨‍💻 Author
+
+**Ayush Yadav**
+Full Stack Developer
+
+If you like this project, give it a ⭐ on GitHub!
